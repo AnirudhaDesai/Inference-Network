@@ -1,8 +1,10 @@
 package com.Inference;
 
+import com.company.PlayData;
 import com.company.RetrievalAPI;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderedWindow extends RetrievalAPI implements QueryNode {
 
@@ -15,7 +17,9 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
 
     @Override
     public void updateToNextDoc() {
-
+        // moves index to next Doc
+        if(idx < postingList.size())
+            idx += postingList.get(idx+1)+2;
     }
 
     public OrderedWindow(ArrayList<QueryNode> nodes, int distance) {
@@ -28,18 +32,25 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
     }
 
     @Override
-    public int nextPos() {
-        return 0;
+    public int nextPos(){
+        //returns the next position in document sequence
+        if(pos<docPostingList.length) {
+
+            return docPostingList[pos];
+
+        }
+        return -1;
+
     }
 
     @Override
-    public void skipPos(int position) {
-
+    public void skipPos(int position){
+        while(pos<docPostingList.length && docPostingList[pos]<=position) pos++;
     }
 
     @Override
-    public void updatePos() {
-
+    public void updatePos(){
+        pos++;
     }
 
     public ArrayList<Integer> getPostingList() {
@@ -145,7 +156,14 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
         }
     }
 
-    public int nextCandidate(){ return -1;}
+    public int nextCandidate(){
+        if(idx >= this.postingList.size()) return -1;
+        int res = this.postingList.get(idx);
+
+//        idx += this.postingList.get(idx+1)+2;  // Go to next document in list
+
+        return res;
+    }
     public double scoreDocument(int docId){
         double score = 0;
         int fik = getDocFrequencyForTerm(this.postingList, docId);
@@ -164,8 +182,51 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
         return this.postingList.get(i+1);
 
     }
-    public boolean hasMatch(int docId) { return false;}
-    public void skipPast(int docId) {;}
+    public boolean hasMatch(int docId){
+
+        int i = 0;
+        while(i< postingList.size() && this.postingList.get(i) < docId){
+            i += this.postingList.get(i+1)+2;
+        }
+
+        return (i<postingList.size() && this.postingList.get(i) == docId);
+
+
+    }
+    public void skipPast(int docId){
+        while(this.idx< this.postingList.size() && this.postingList.get(this.idx) <= docId)
+            this.idx += this.postingList.get(this.idx+1)+2;
+        if(idx < postingList.size())   // Document exists. Update the doc posting List array to current doc
+            updateDocPostingList(postingList.get(idx));
+
+    }
+    private void updateDocPostingList(int docId){
+        // Updates the docPostingList array to the document
+        int i =  getIndexForDocument(docId);
+        if(i==-1){
+            // document does not exist in posting list. Error out.
+            System.err.println("Document not in List");
+            updateDocPostingList(this.postingList.get(0));
+        }
+        int size = this.postingList.get(i+1);
+        this.docPostingList = new int[size];
+        int k = 0;
+        for(int j = i+2; j<size+i+2;j++)
+            this.docPostingList[k++] = this.postingList.get(j);
+        this.pos = 0;
+
+    }
+    private int getIndexForDocument(int docId){
+        // Returns the index at which this document exists in the posting List
+
+        int i = 0;
+        while(i < this.postingList.size() && this.postingList.get(i) != docId){
+            i += this.postingList.get(i+1)+2;
+        }
+        if(i >= this.postingList.size())
+            return -1;   // document does not exist in posting List. Return -1
+        return i;
+    }
 
     public int skipPastPosition(int pos){
         // skips past the position in docPostingList. Returns -1 if end of list
@@ -182,4 +243,21 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
             this.idx += this.postingList.get(this.idx+1)+2;
         return true;
     }
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    public List<Integer> getDocSet(){
+        List<Integer> docSet = new ArrayList<>();
+        int i = 0;
+        while(i < postingList.size()){
+            docSet.add(postingList.get(i));
+            i += postingList.get(i+1)+2;
+        }
+        return docSet;
+    }
+
+
 }

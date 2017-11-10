@@ -1,6 +1,9 @@
 package com.Inference;
 
+import com.company.PlayData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class BelAND implements QueryNode {
 
@@ -13,6 +16,16 @@ public class BelAND implements QueryNode {
     @Override
     public void updateToNextDoc() {
 
+    }
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getDocSet() {
+        return null;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.Inference;
 
+import com.company.PlayData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class BelMAX implements QueryNode {
     public BelMAX(ArrayList<QueryNode> nodes) {
@@ -16,6 +19,16 @@ public class BelMAX implements QueryNode {
         return score;
     }
     public boolean hasMatch(int docId) { return false;}
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getDocSet() {
+        return null;
+    }
 
     @Override
     public void updateToNextDoc() {

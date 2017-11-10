@@ -1,9 +1,11 @@
 package com.Inference;
 
+import com.company.PlayData;
 import com.company.RetrievalAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TermNode extends RetrievalAPI implements QueryNode {
    private ArrayList<Integer>  postingList; // invertedList for term
@@ -61,7 +63,7 @@ public class TermNode extends RetrievalAPI implements QueryNode {
         }
 
         return (i<postingList.size() && this.postingList.get(i) == docId);
-        //        return utilities.checkPostingListForDocId(postingList, docId);
+
 
     }
     public int skipPastPosition(int pos){
@@ -144,6 +146,21 @@ public class TermNode extends RetrievalAPI implements QueryNode {
         if(i >= this.postingList.size())
             return -1;   // document does not exist in posting List. Return -1
         return i;
+    }
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    public List<Integer> getDocSet(){
+        List<Integer> docSet = new ArrayList<>();
+        int i = 0;
+        while(i < postingList.size()){
+            docSet.add(postingList.get(i));
+            i += postingList.get(i+1)+2;
+        }
+        return docSet;
     }
 
 }

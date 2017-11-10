@@ -1,6 +1,9 @@
 package com.Inference;
 
+import com.company.PlayData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class BelWAND implements QueryNode{
     private ArrayList<Double> nodeWeights;
@@ -11,6 +14,16 @@ public class BelWAND implements QueryNode{
             System.err.println("Number of Weights do not match number of Nodes!");
             System.exit(1);
         }
+    }
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getDocSet() {
+        return null;
     }
 
     @Override

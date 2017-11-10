@@ -1,6 +1,9 @@
 package com.Inference;
 
+import com.company.PlayData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class BelWSUM implements QueryNode {
     private ArrayList<Double> nodeWeights;
@@ -18,6 +21,16 @@ public class BelWSUM implements QueryNode {
     @Override
     public int nextPos() {
         return 0;
+    }
+
+    @Override
+    public ArrayList<PlayData> RetrieveQuery() {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getDocSet() {
+        return null;
     }
 
     @Override

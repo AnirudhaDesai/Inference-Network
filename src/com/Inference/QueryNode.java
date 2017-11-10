@@ -1,6 +1,9 @@
 package com.Inference;
 
+import com.company.PlayData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public interface QueryNode {
 
@@ -16,5 +19,7 @@ public interface QueryNode {
     void skipPos(int position);
     void updatePos();
     void updateToNextDoc();
+    List<Integer> getDocSet();
+    ArrayList<PlayData> RetrieveQuery();
 
 }
