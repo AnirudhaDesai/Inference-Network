@@ -19,7 +19,7 @@ public class Main {
         String mode = !isCompressed?"Uncompressed":"Compressed";
 
 //        TestNodes testNodes = new TestNodes();
-//    testNodes.RunTests();
+//        testNodes.RunTests();
 
     Evaluations evaluations = new Evaluations(isCompressed);
     evaluations.runOperatorEvaluation();

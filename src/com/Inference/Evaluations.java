@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Evaluations{
     private boolean isCompressed;
-    private static final String OW = "od1";
-    private static final String UW = "uw";
+    private static final String OD1 = "OD1";
+    private static final String UW1 = "UW1";
 
     private String path;
     private BufferedReader bufferedReader;
@@ -38,7 +38,7 @@ public class Evaluations{
         QueryRetrievalByOperation(1);
 
 
-//        QueryRetrievalByOperation(2);
+        QueryRetrievalByOperation(2);
 
 
 
@@ -75,7 +75,7 @@ public class Evaluations{
                     OrderedWindow orderedWindow = new OrderedWindow(nodes,1);
                     results = orderedWindow.RetrieveQuery();
                     if(results != null) {
-                        writeResultsTRECRunFormat(results, query.trim().split("\\s+")[0], "OW");
+                        writeResultsTRECRunFormat(results, query.trim().split("\\s+")[0], OD1);
                         results.clear();
                     }
 
@@ -99,7 +99,7 @@ public class Evaluations{
                     UnorderedWindow unorderedWindow = new UnorderedWindow(nodes,nodes.size());
                     results = unorderedWindow.RetrieveQuery();
                     if(results != null) {
-                        writeResultsTRECRunFormat(results, query.trim().split("\\s+")[0], "UW");
+                        writeResultsTRECRunFormat(results, query.trim().split("\\s+")[0], UW1);
 
                         results.clear();
                     }
@@ -139,9 +139,9 @@ public class Evaluations{
             line.append(scene);
             line.append(String.format("%-4s", rank++));
             line.append(String.format("%-15s", (float)res.getScore()));
-            if(mode.equals("OW"))
+            if(mode.equals(OD1))
                 line.append(String.format("%-50s","anirudhadesa-"+mode+"$"));
-            else if(mode.equals("UW"))
+            else if(mode.equals(UW1))
                 line.append(String.format("%-50s","anirudhadesa-"+mode+"$"));
 
             writer.writeChars(line.toString()+"\n");

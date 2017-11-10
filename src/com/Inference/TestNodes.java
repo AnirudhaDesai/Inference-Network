@@ -10,20 +10,22 @@ public class TestNodes {
 
         /* NOT tests */
 
-//        RunBelNOTTests();
+        RunBelNOTTests();
         /* OR tests */
 
-//        RunBelORTests();
+        RunBelORTests();
         /* AND tests */
 
-//        RunBelANDTests();
+        RunBelANDTests();
 
-//        RunOrderedWindowTests();
+        RunOrderedWindowTests();
 
-//        RunFilterRequireTests();
+        RunFilterRequireTests();
 
-//        RunFilterRejectTests();
-//        RunUnorderedWindowTests();
+        RunFilterRejectTests();
+        RunUnorderedWindowTests();
+        RunBooleanANDTests();
+
     }
 
     public void RunOrderedWindowTests() throws IOException{
@@ -69,6 +71,18 @@ public class TestNodes {
         System.out.println("Score 1 : " + score1);
         System.out.println("Score 2 : "+ score2);
 
+    }
+    public void RunBooleanANDTests() throws IOException{
+        System.out.println("Running Boolean AND Tests...");
+        ArrayList<QueryNode> nodes  =  new ArrayList<>();
+        nodes.add(new TermNode("king"));
+        nodes.add(new TermNode("queen"));
+//        nodes.add(new TermNode("henry"));
+        booleanAND boolAND = new booleanAND(nodes);
+        System.out.println("Posting List for boolean AND : ");
+        for(int n : boolAND.getPostingList())
+            System.out.print(n + ",");
+        System.out.println("\n"+boolAND.scoreDocument(60));
     }
     public void RunBelORTests() throws IOException{
         System.out.println("Running Tests For OR...");
