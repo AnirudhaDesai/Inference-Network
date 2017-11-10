@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelSUM implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     public BelSUM(ArrayList<QueryNode> nodes) {
         children.addAll(nodes);
     }

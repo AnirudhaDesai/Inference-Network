@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.DoubleBinaryOperator;
 
 public class FilterRequire  extends RetrievalAPI implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     public FilterRequire(List<QueryNode> nodes) throws IOException {
         if(nodes.size()< 2) {
             System.err.println("Insufficient nodes for filter!");

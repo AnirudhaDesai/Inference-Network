@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TermNode extends RetrievalAPI implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
    private ArrayList<Integer>  postingList; // invertedList for term
    private int idx;  // current index pointer to posting list
    private int cqi;  // collection term frequency

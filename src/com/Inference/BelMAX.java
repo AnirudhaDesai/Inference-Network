@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelMAX implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     public BelMAX(ArrayList<QueryNode> nodes) {
         children.addAll(nodes);
     }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelAND implements QueryNode {
-
+    ArrayList<QueryNode> children = new ArrayList<>();
     public BelAND(ArrayList<QueryNode> nodes) {
         children.addAll(nodes);
     }

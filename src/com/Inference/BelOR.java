@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelOR implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     public BelOR(ArrayList<QueryNode> nodes) {
         children.addAll(nodes);
     }

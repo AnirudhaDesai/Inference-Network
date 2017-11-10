@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelNOT implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
 
     public BelNOT(QueryNode child) {
         if(child != null)

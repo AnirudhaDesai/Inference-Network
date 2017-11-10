@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelWSUM implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     private ArrayList<Double> nodeWeights;
     public BelWSUM(ArrayList<QueryNode> nodes, ArrayList<Double> weights) {
         children.addAll(nodes);

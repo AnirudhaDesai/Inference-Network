@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelWAND implements QueryNode{
+    ArrayList<QueryNode> children = new ArrayList<>();
     private ArrayList<Double> nodeWeights;
     public BelWAND(ArrayList<QueryNode> nodes, ArrayList<Double> weights) {
         children.addAll(nodes);

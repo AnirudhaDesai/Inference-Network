@@ -6,7 +6,7 @@ import com.company.RetrievalAPI;
 import java.io.IOException;
 import java.util.*;
 
-public class OrderedWindow extends RetrievalAPI implements QueryNode {
+public class UnorderedWindow extends RetrievalAPI implements QueryNode {
     ArrayList<QueryNode> children = new ArrayList<>();
 
     private ArrayList<Integer> postingList; // invertedList for window
@@ -23,17 +23,14 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
             idx += postingList.get(idx+1)+2;
     }
 
-    public OrderedWindow(ArrayList<QueryNode> nodes, int distance) {
-            children.addAll(nodes);
-            int cqi = 0;
-            C = super.getTotalWords();
-            postingList = new ArrayList<>();
-            if(nodes.size()>1)
-                buildPostingList(distance);
-            else if(nodes.size()==1)
-                // window has only 1 term. get the term's posting list
-                this.postingList = new UnorderedWindow(nodes,nodes.size()).getPostingList();
-
+    public UnorderedWindow(ArrayList<QueryNode> nodes, int windowSize) {
+        children = new ArrayList<>();
+        children.addAll(nodes);
+        int cqi = 0;
+        C = super.getTotalWords();
+        postingList = new ArrayList<>();
+        if(nodes.size()>0)
+            buildPostingList(windowSize);
     }
 
     @Override
@@ -67,7 +64,7 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
     }
 
     private void buildPostingList(int distance){
-        /* Build Posting List for this Ordered Window */
+        /* Build Posting List for this Unordered Window */
         boolean isEndOfList = false;
 //        boolean moveToNextDoc = false;
         ArrayList<Integer> tempList = new ArrayList<>();  // tempList to hold doc wise posting List
@@ -92,60 +89,58 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
             }
             if(!skipDoc) {
             /* From here, all nodes have the document. Proceed to calculating number of windows in doc */
-                int startTermIndex = 0;
-                int startPos = children.get(startTermIndex).nextPos();
-                // Points to the index of the current start child
-                if (startPos == -1) continue;
+
                 tempList.clear();
                 tempList.add(doc);  //
                 tempList.add(0);  // doc term frequency. We will update this later.
                 int fkid = 0;   // doc term frequency tracker
 //                int i = startTermIndex+1;
-                for (int i = startTermIndex + 1; i >= 0 && i < children.size(); i++) {
-//                while(i >= 0 && i < children.size()){
-                    if (startPos == -1) break;   // Move to next document. Posting List Consumed
-
-                    children.get(i).skipPos(startPos);
-                    int nextPos = children.get(i).nextPos();
-                    if (nextPos == -1) {
-                        // end of position list for this document for this term. Move to next Document
-//                    moveToNextDoc = true;
-                        break;
+                int minPosIndex = 0;   // holds the index of the node which has current minimum Pos
+                int minPos = children.get(minPosIndex).nextPos(); // initialize min Pos.
+                boolean isEndOfDoc = false;
+                while(!isEndOfDoc) {
+                    if(minPos == -1) break;  // End of document. Move to next doc
+                    for (int i = 0; i < children.size(); i++) {
+                        int pos = children.get(i).nextPos();
+                        if(pos == -1){
+                            isEndOfDoc = true;
+                            break;
+                        }
+                        if (pos < minPos) {
+                            minPos = pos;
+                            minPosIndex = i;
+                        }
                     }
-                    if (nextPos - startPos <= distance) {
-                        startPos = nextPos;   // still a good candidate. proceed further.
-                        startTermIndex = i;
-                        if (i == children.size() - 1) {  // Candidate passed. Collect Window
-                            tempList.add(children.get(0).nextPos());
-                            fkid++;
-                            startTermIndex = 0;
-                            children.get(startTermIndex).updatePos();
-                            startPos = children.get(startTermIndex).nextPos();
-                            i = startTermIndex;
+                    if(isEndOfDoc) break;
+                /*  Check for window size against min pos  */
+                    for (int i = 0; i < children.size(); i++) {
+                        int pos = children.get(i).nextPos();
+
+                        if (pos - minPos < distance) {
+                            // Valid candidate so far.
+                            // check if last term.
+                            if (i == children.size() - 1) {
+                                tempList.add(children.get(minPosIndex).nextPos());
+                                fkid++;
+                                // update all the child node pointers to next position. No double dipping
+                                for(QueryNode child : children)
+                                    child.updatePos();
+
+
+                            }
+
+                        } else {
+                            // Candidate failed.
+                            // update minimum position to next pos and repeat process
+                            children.get(minPosIndex).updatePos();
+                            minPos = children.get(minPosIndex).nextPos();
+                            break;
+
                         }
-
-                        continue;
-                    }
-                    else {
-                        // the distance is higher. Candidate failed. Reset Start to previous valid and try again.
-
-                        while (startTermIndex > 0) {
-                            children.get(startTermIndex).updatePos();  // move To next position
-                            startPos = children.get(startTermIndex).nextPos(); // get the position
-                            if (startPos - children.get(startTermIndex - 1).nextPos() > distance)
-                                startTermIndex--;
-                            else break;
-
-                        }
-                        if (startTermIndex == 0) {
-                            children.get(startTermIndex).updatePos(); // This would not have executed in while loop if 0
-                            startPos = children.get(startTermIndex).nextPos();
-                        }
-                        i = startTermIndex;
-
                     }
 
                 }
+
 
             /* The document has been consumed. If the temp List size is > 2, we have collected windows.
              Add them to the posting list.
@@ -248,7 +243,6 @@ public class OrderedWindow extends RetrievalAPI implements QueryNode {
             this.idx += this.postingList.get(this.idx+1)+2;
         return true;
     }
-
 
     private HashMap<Integer, Double> scoreAll(){
         HashMap<Integer,Double> docIdToScores = new HashMap<>();

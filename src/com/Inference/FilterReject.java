@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.DoubleBinaryOperator;
 
 public class FilterReject  extends RetrievalAPI implements QueryNode {
+    ArrayList<QueryNode> children = new ArrayList<>();
     public FilterReject(List<QueryNode> nodes) throws IOException {
         if(nodes.size()< 2) {
             System.err.println("Insufficient nodes for filter!");
@@ -26,7 +27,13 @@ public class FilterReject  extends RetrievalAPI implements QueryNode {
     private HashMap<Integer, Double> scoreAll(){
         HashMap<Integer,Double> docIdToScores = new HashMap<>();
         QueryNode proxExpression = children.get(0);  // proximity expression is in the 1st index. - by design
-
+        List<Integer> proxExpressionDocSet = proxExpression.getDocSet();
+        Set<Integer> allDocSet = super.getDiskReader().getRetrievedDocToLengthMap().keySet();
+        for(int doc : allDocSet){
+            if(!proxExpressionDocSet.contains(doc)){   // reject all the docs for proximity Expression
+                docIdToScores.put(doc, children.get(1).scoreDocument(doc));
+            }
+        }
 
         return docIdToScores;
 

@@ -20,7 +20,10 @@ public class TestNodes {
 
 //        RunOrderedWindowTests();
 
-        RunFilterRequireTests();
+//        RunFilterRequireTests();
+
+//        RunFilterRejectTests();
+//        RunUnorderedWindowTests();
     }
 
     public void RunOrderedWindowTests() throws IOException{
@@ -34,6 +37,18 @@ public class TestNodes {
         for(int n : orderedWindow.getPostingList())
             System.out.print(n + ",");
         System.out.println("\n"+orderedWindow.scoreDocument(60));
+    }
+    public void RunUnorderedWindowTests() throws IOException{
+        System.out.println("Running Unordered Window Tests...");
+        ArrayList<QueryNode> nodes  =  new ArrayList<>();
+        nodes.add(new TermNode("king"));
+        nodes.add(new TermNode("queen"));
+//        nodes.add(new TermNode("henry"));
+        UnorderedWindow unorderedWindow = new UnorderedWindow(nodes, 2);
+        System.out.println("Posting List for UW : ");
+        for(int n : unorderedWindow.getPostingList())
+            System.out.print(n + ",");
+        System.out.println("\n"+unorderedWindow.scoreDocument(60));
     }
     public void RunBelNOTTests() throws IOException{
         System.out.println("Running Tests For NOT...");
@@ -77,6 +92,16 @@ public class TestNodes {
         FilterRequire filterRequire = new FilterRequire(nodes);
         ArrayList<PlayData> results = filterRequire.RetrieveQuery();
         System.out.println("Filter Node Tests Successful");
+
+    }
+    public void RunFilterRejectTests()throws IOException{
+        ArrayList<QueryNode> nodes  =  new ArrayList<>();
+        nodes.add(new TermNode("volscian"));
+        nodes.add(new TermNode("camp"));
+
+        FilterReject filterReject = new FilterReject(nodes);
+        ArrayList<PlayData> results = filterReject.RetrieveQuery();
+        System.out.println("Filter Reject Node Tests Successful");
 
     }
 }
