@@ -8,6 +8,32 @@ public class BelSUM implements QueryNode {
     }
 
     public int nextCandidate(){ return -1;}
+
+    @Override
+    public void updateToNextDoc() {
+
+    }
+
+    @Override
+    public int nextPos() {
+        return 0;
+    }
+
+    @Override
+    public void skipPos(int position) {
+
+    }
+
+    @Override
+    public void updatePos() {
+
+    }
+
+    @Override
+    public boolean skipToDoc(int docId) {
+        return false;
+    }
+
     public double scoreDocument(int docId){
         double score = 0;
         for(QueryNode child : children) {

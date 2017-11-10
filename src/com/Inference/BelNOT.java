@@ -14,4 +14,29 @@ public class BelNOT implements QueryNode {
         return score; }
     public boolean hasMatch(int docId) { return false;}
     public void skipPast(int docId) {;}
+
+    @Override
+    public void updateToNextDoc() {
+
+    }
+
+    @Override
+    public int nextPos() {
+        return 0;
+    }
+
+    @Override
+    public void skipPos(int position) {
+
+    }
+
+    @Override
+    public void updatePos() {
+
+    }
+
+    @Override
+    public boolean skipToDoc(int docId) {
+        return false;
+    }
 }
